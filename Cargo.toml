@@ -1,0 +1,17 @@
+[package]
+name = "delaunay-trig"
+version = "0.1.0"
+edition = "2021"
+authors = ["Calcopod"]
+description = "A delaunay triangulation simulation using GGEZ"
+repository = "will-be-added.github.io"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+piston = "0.53.2"
+piston2d-graphics = "0.43.0"
+pistoncore-glutin_window = "0.71.0"
+piston2d-opengl_graphics = "0.82.0"
+nalgebra = "0.32.2"
+rand = "0.8.4"
