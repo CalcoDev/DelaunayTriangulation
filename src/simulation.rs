@@ -1,7 +1,6 @@
-use crate::triangulation;
+use macroquad::prelude::Vec2;
 
-use nalgebra::Vector2;
-pub type Vector2f = Vector2<f32>;
+use crate::triangulation;
 
 #[derive(Debug)]
 struct VariedValue {
@@ -39,13 +38,13 @@ impl SimulationSettings {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Point {
-    pub position: Vector2<f32>,
+    pub position: Vec2,
     pub size: f32,
     speed: f32,
     dir_timer: f32,
-    dir: Vector2<f32>,
+    dir: Vec2,
 }
 
 impl triangulation::TriangulationPoint for Point {
@@ -94,11 +93,21 @@ impl Simulation {
 
     pub fn add_point(&mut self, x: f32, y: f32) {
         self.points.push(Point {
-            position: Vector2f::new(x, y),
+            position: Vec2::new(x, y),
             size: Self::get_random_point_size(),
             speed: self.settings.point_speed.compute_random(),
             dir_timer: self.settings.point_time.compute_random(),
             dir: Self::get_random_point_dir(),
+        });
+    }
+
+    pub fn add_static_point(&mut self, x: f32, y: f32) {
+        self.points.push(Point {
+            position: Vec2::new(x, y),
+            size: Self::get_random_point_size(),
+            speed: 0.0,
+            dir_timer: f32::MAX,
+            dir: Vec2::new(0.0, 0.0),
         });
     }
 
@@ -148,11 +157,11 @@ impl Simulation {
         self.triangles = triangulation::triangulate(&self.points);
     }
 
-    fn get_random_point_dir() -> Vector2f {
+    fn get_random_point_dir() -> Vec2 {
         // let angle = rand::random::<f32>() * std::f32::consts::PI * 2.0f32;
         let angle =
             rand::random::<f32>() * std::f32::consts::PI * 0.5 + std::f32::consts::PI * 0.25;
-        Vector2f::new(angle.cos(), (-angle).sin())
+        Vec2::new(angle.cos(), (-angle).sin())
     }
 
     fn get_random_point_size() -> f32 {
