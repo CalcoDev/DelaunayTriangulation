@@ -1,10 +1,10 @@
 [package]
 name = "delaunay-trig"
 version = "0.1.0"
-edition = "2021"
-authors = ["Calcopod"]
-description = "A delaunay triangulation simulation using GGEZ"
-repository = "will-be-added.github.io"
+edition = "2023"
+authors = ["Calco Dev"]
+description = "A Delaunay triangulation visualization using Piston"
+repository = "https://github.com/CalcoDev/DelaunayTriangulation"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
