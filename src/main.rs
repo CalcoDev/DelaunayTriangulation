@@ -12,9 +12,9 @@ mod triangulation;
 
 use game::Game;
 
-const WIDTH: i32 = 1080;
-const HEIGHT: i32 = 720;
-const SIMULATION_FRAMERATE: u32 = 60;
+const WIDTH: i32 = 800;
+const HEIGHT: i32 = 600;
+const SIMULATION_FRAMERATE: u32 = 120;
 
 fn window_conf() -> window::Conf {
     window::Conf {
@@ -37,9 +37,21 @@ async fn main() {
     );
     game.init(500);
 
-    let vert = String::from_utf8(prelude::load_file("assets/shader.vert").await.unwrap()).unwrap();
-    let frag = String::from_utf8(prelude::load_file("assets/shader.frag").await.unwrap()).unwrap();
-    let geom = String::from_utf8(prelude::load_file("assets/shader.geom").await.unwrap()).unwrap();
+    let vert = prelude::load_file("assets/shader.vert").await.unwrap();
+    let frag = prelude::load_file("assets/shader.frag").await.unwrap();
+
+    let material = prelude::load_material(
+        String::from_utf8(vert).unwrap().as_ref(),
+        String::from_utf8(frag).unwrap().as_ref(),
+        MaterialParams {
+            uniforms: vec![
+                ("gradient_a".to_string(), prelude::UniformType::Float3),
+                ("gradient_b".to_string(), prelude::UniformType::Float3),
+            ],
+            ..Default::default()
+        },
+    )
+    .unwrap();
 
     let mut last_update = 0.0f32;
     let simulation_frame_increment = 1.0 / SIMULATION_FRAMERATE as f32;
@@ -54,7 +66,27 @@ async fn main() {
             last_update += simulation_frame_increment;
         }
 
-        game.render();
+        let grad_a: [u8; 3] = [255, 242, 211];
+        let grad_b: [u8; 3] = [11, 70, 82];
+        let point_colour: [u8; 3] = [245, 240, 228];
+
+        material.set_uniform("gradient_a", grad_b.map(|x| x as f32 / 255.0));
+        material.set_uniform("gradient_b", grad_a.map(|x| x as f32 / 255.0));
+
+        game.render(
+            &material,
+            Color::new(
+                point_colour[0] as f32 / 255.0,
+                point_colour[1] as f32 / 255.0,
+                point_colour[2] as f32 / 255.0,
+                1.0,
+            ),
+        );
+
+        // Draw the FPS counter
+        // let fps = macroquad::time::get_fps();
+        // let fps_text = format!("FPS: {}", fps);
+        // prelude::draw_text(&fps_text, 10.0, 60.0, 60.0, Color::new(0.0, 1.0, 0.0, 1.0));
 
         window::next_frame().await;
     }

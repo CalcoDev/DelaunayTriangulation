@@ -1,4 +1,5 @@
 use macroquad::prelude::Vec2;
+use rand::Rng;
 
 use crate::triangulation;
 
@@ -158,9 +159,11 @@ impl Simulation {
     }
 
     fn get_random_point_dir() -> Vec2 {
-        // let angle = rand::random::<f32>() * std::f32::consts::PI * 2.0f32;
-        let angle =
-            rand::random::<f32>() * std::f32::consts::PI * 0.5 + std::f32::consts::PI * 0.25;
+        const V: f32 = 15.0;
+        let angle = rand::thread_rng()
+            .gen_range((90.0 - V)..(90.0 + V))
+            .to_radians();
+
         Vec2::new(angle.cos(), (-angle).sin())
     }
 
